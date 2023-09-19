@@ -58,7 +58,8 @@ export default defineNuxtConfig({
       '/**': { isr: false },
     },
     prerender: {
-      ignore: ['/movies/*', 'tv/*', 'user/*'],
+      crawlLinks: false,
+      ignore: ['/movies', '/tv', '/person'],
     },
   },
   i18n: {
