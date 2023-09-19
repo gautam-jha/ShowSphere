@@ -26,7 +26,7 @@ const mounted = useMounted()
   <div
     :key="item.id"
     relative
-    class="aspect-ratio-3/2 lg:aspect-ratio-25/9"
+    class="aspect-ratio-3/2 lg:aspect-ratio-25/9 min-h-[400px] md:min-h-[200px]"
     bg-black
   >
     <div absolute top-0 right-0 lt-lg="left-0" lg="bottom-0 left-1/3">

@@ -71,7 +71,7 @@ const seasons = props.item?.seasons
         </div>
       </div>
     </CarouselBase>
-    <div v-if="type === 'tv' && data.selectedSeason" class="grid grid-cols-[repeat(auto-fill,_190px)] grid-gap-3 mx-auto justify-center items-center" p="t-10 x-10">
+    <div v-if="type === 'tv' && data.selectedSeason" class="grid grid-cols-[repeat(auto-fill,_190px)] grid-gap-3 mx-auto justify-center items-center" p="t-10 x-2 md:x-10">
       <div v-for="index in data.selectedSeason?.episode_count" :key="index">
         <button
           flex="~ gap2"

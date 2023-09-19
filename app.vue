@@ -1,6 +1,6 @@
 <script setup>
 import '@unocss/reset/tailwind.css'
-
+const {public:{prodUrl}} = useRuntimeConfig()
 useHead({
   htmlAttrs: {
     lang: 'en',
@@ -10,7 +10,7 @@ useHead({
   titleTemplate: title => title !== 'ShowSphere' ? `${title} · ShowSphere` : title,
   meta: [
     { name: 'description', content: 'Watch movies, anime, tv shows, ad free' },
-    { property: 'og:image', content: 'https://github.com/gautam-jha/ShowSphere' },
+    { property: 'og:image', content: `${prodUrl}/ShowSphere-logos.jpeg` },
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:site', content: '@gotham.sh' },
     { name: 'twitter:creator', content: '@gotham.sh' },
