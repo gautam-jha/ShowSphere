@@ -25,7 +25,7 @@ const AsyncWrapper = defineComponent({
 <template>
   <div>
     <AsyncWrapper v-slot="{ item }">
-      <NuxtLink :to="`/${type}/${item.id}/${(item.name ?? item.title)?.toLowerCase()?.replace(/\s/g, '-')}`">
+      <NuxtLink :to="`/${type}/${item.id}/${(item.name ?? item.title)?.toLowerCase()?.replace(/\W/g, '-')}`">
         <MediaHero :item="item" />
       </NuxtLink>
     </AsyncWrapper>

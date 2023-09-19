@@ -9,7 +9,7 @@ defineProps<{
 
 <template>
   <NuxtLink
-    :to="`/${item.media_type || type}/${item.id}/${(item.title ?? item.name)?.toLowerCase()?.replace(/\s/g, '-')}`" pb2
+    :to="`/${item.media_type || type}/${item.id}/${(item.title ?? item.name)?.toLowerCase()?.replace(/\W/g, '-')}`" pb2
   >
     <div
       block bg-gray4:10 p1

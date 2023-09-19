@@ -57,6 +57,9 @@ export default defineNuxtConfig({
       '/api': { proxy: `${apiBaseUrl}/tmdb`, isr: false },
       '/**': { isr: false },
     },
+    prerender: {
+      ignore: ['/movies/*', 'tv/*', 'user/*'],
+    },
   },
   i18n: {
     detectBrowserLanguage: {
