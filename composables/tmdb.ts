@@ -12,8 +12,9 @@ async function _fetchTMDB(url: string, params: Record<string, string | number | 
     const locale = useNuxtApp().$i18n.locale
     params.language = unref(locale)
   }
+  const { public: { apiBaseUrl } } = useRuntimeConfig()
   return await $fetch(url, {
-    baseURL: `${process.env.baseUrl ?? ''}/api`,
+    baseURL: `${apiBaseUrl}/tmdb`,
     params,
   })
 }
