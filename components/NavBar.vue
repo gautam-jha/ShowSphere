@@ -22,7 +22,7 @@
     <NuxtLink to="/" title="ShowSphere">
       <NuxtImg
         alt="ShowSphere"
-        src="public/ShowSphere-logos_white.png"
+        :src="`${process.env.NUXT_ENV_PROD_URL}/ShowSphere-logos_white.png`"
         width="110"
         height="110"
         format="png"
