@@ -1,3 +1,7 @@
+<script setup>
+const { public: { prodUrl } } = useRuntimeConfig()
+</script>
+
 <template>
   <div
     flex="~ row "
@@ -22,7 +26,7 @@
     <NuxtLink to="/" title="ShowSphere">
       <NuxtImg
         alt="ShowSphere"
-        :src="`${process.env.NUXT_ENV_PROD_URL}/ShowSphere-logos_white.png`"
+        :src="`${prodUrl}/ShowSphere-logos_white.png`"
         width="110"
         height="110"
         format="png"

@@ -1,6 +1,7 @@
 const isDev = process.env.NODE_ENV === 'development'
 const apiBaseUrl = process.env.NUXT_ENV_API_URL
 const streamUrl = process.env.NUXT_ENV_STREAM_BASE
+const prodUrl = process.env.NUXT_ENV_PROD_URL
 
 export default defineNuxtConfig({
   modules: [
@@ -22,6 +23,7 @@ export default defineNuxtConfig({
     public: {
       apiBaseUrl,
       streamUrl,
+      prodUrl,
     },
   },
   devtools: {
