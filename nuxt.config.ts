@@ -39,6 +39,7 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
+    preset: 'node-server',
     devProxy: {
       '/api': {
         target: `${apiBaseUrl}/tmdb`,
