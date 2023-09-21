@@ -27,7 +27,7 @@ onMounted(() => {
   <div
     v-for="season in seasons"
     :key="season.id"
-    class="flex flex-1 w-80 md:w-96 bg-white transition hover:shadow-xl hover:cursor-pointer" :class="{
+    class="flex flex-1 max-h-80 w-80 md:w-96 bg-white transition hover:shadow-xl hover:cursor-pointer" :class="{
       'bg-yellow-300': season.id === obj.selected,
     }"
     @click="clickHandler(season)"
