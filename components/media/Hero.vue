@@ -16,7 +16,7 @@ const trailer = computed(() => getTrailer(props.item))
 const showModal = useIframeModal()
 function playTrailer() {
   if (trailer.value)
-    showModal(trailer.value)
+    showModal({ link: trailer.value, isSandbox: true })
 }
 
 const mounted = useMounted()

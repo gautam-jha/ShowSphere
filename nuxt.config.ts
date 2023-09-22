@@ -1,6 +1,7 @@
 const isDev = process.env.NODE_ENV === 'development'
 const apiBaseUrl = process.env.NUXT_ENV_API_URL
 const streamUrl = process.env.NUXT_ENV_STREAM_BASE
+const stream2Url = process.env.NUXT_ENV_STREAM2_BASE
 const prodUrl = process.env.NUXT_ENV_PROD_URL
 
 export default defineNuxtConfig({
@@ -17,12 +18,17 @@ export default defineNuxtConfig({
     renderJsonPayloads: true,
   },
   routeRules: {
-    '/**': isDev ? {} : { cache: { swr: true, maxAge: 120, staleMaxAge: 60, headersOnly: true } },
+    '/**': isDev
+      ? {}
+      : {
+          cache: { swr: true, maxAge: 120, staleMaxAge: 60, headersOnly: true },
+        },
   },
   runtimeConfig: {
     public: {
       apiBaseUrl,
       streamUrl,
+      stream2Url,
       prodUrl,
     },
   },

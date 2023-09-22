@@ -7,7 +7,7 @@ const props = defineProps<{
 
 const showModal = useIframeModal()
 function play() {
-  return showModal(getVideoLink(props.item)!)
+  return showModal({ link: getVideoLink(props.item), isSandbox: true })
 }
 </script>
 

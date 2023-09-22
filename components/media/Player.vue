@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// import { getVideoServer2 } from '~/composables/item'
 import type { Media, MediaType, Seasons } from '~/types'
 
 const props = withDefaults(
@@ -11,19 +12,31 @@ const props = withDefaults(
 )
 
 const {
-  public: { streamUrl },
+  public: { streamUrl, stream2Url },
 } = useRuntimeConfig()
 
 const showModal = useIframeModal()
 const route = useRoute()
 
 const type = computed(() => (route.params.type as MediaType) || 'movie')
-const url = computed(() => `${streamUrl}${getVideoServer(props.item, type.value)}`)
+const url = computed(
+  () => `${streamUrl}${getVideoServer(props.item, type.value)}`,
+)
+const url2 = computed(
+  () => `${stream2Url}${getVideoServer2(props.item)}`,
+)
 const data = reactive<{
   selectedSeason: Seasons
-}>({ selectedSeason: {} as Seasons })
-function playMovie() {
-  showModal(url.value)
+  selectedServer: number
+}>({ selectedSeason: {} as Seasons, selectedServer: 1 })
+function playMovie(server: number) {
+  if (server === 1) 
+    showModal({ link: url.value, isSandbox: true })
+  
+
+  if (server === 2) 
+    showModal({ link: url2.value, isSandbox: false })
+  
 }
 
 function selectedSeasonHandler(selectedSeason: Seasons) {
@@ -31,7 +44,16 @@ function selectedSeasonHandler(selectedSeason: Seasons) {
 }
 
 function playTv(season: number, episode: number) {
-  showModal(`${url.value}/${season}/${episode}`)
+  if (data.selectedServer === 1) 
+    showModal({ link:`${url2.value}&s=${season}&e=${episode}`, isSandbox: false })
+
+  else 
+    showModal({ link:`${url.value}/${season}/${episode}`, isSandbox: true })
+
+  
+}
+function handleServer(id: number) {
+  data.selectedServer = id
 }
 const seasons = props.item?.seasons
 </script>
@@ -40,7 +62,9 @@ const seasons = props.item?.seasons
   <div :key="item.id" w-full bg-black p="b-12 t-8">
     <CarouselBase v-if="item.id">
       <template #title>
-        {{ type === 'movie' ? $t('Available Servers') : $t('Seasons & Episodes') }}
+        {{
+          type === 'movie' ? $t('Available Servers') : $t('Seasons & Episodes')
+        }}
       </template>
       <div>
         <div v-if="type === 'movie'" flex flex-wrap gap-2 class="sources">
@@ -53,8 +77,8 @@ const seasons = props.item?.seasons
             bg="gray/15 hover:gray/20 disabled:gray/8 disabled:pointer-not-allowed"
             transition
             :title="$t('Watch Movie')"
-            :disabled="i !== 1"
-            @click="playMovie()"
+            :disabled="i > 2"
+            @click="playMovie(i)"
           >
             <div i-ph-play />
             {{ $t('Server') }} #{{ i }}
@@ -64,14 +88,92 @@ const seasons = props.item?.seasons
           <div flex gap-2>
             <CarouselSeason
               v-if="seasons?.length"
-              :seasons="seasons.filter((s) => s.name.toLowerCase() !== 'specials').sort((a, b) => a.season_number - b.season_number)"
+              :seasons="
+                seasons
+                  .filter((s) => s.name.toLowerCase() !== 'specials')
+                  .sort((a, b) => a.season_number - b.season_number)
+              "
               @selected-season="selectedSeasonHandler"
             />
           </div>
         </div>
       </div>
     </CarouselBase>
-    <div v-if="type === 'tv' && data.selectedSeason" class="grid grid-cols-[repeat(auto-fill,_190px)] grid-gap-3 mx-auto justify-center items-center" p="t-10 x-2 md:x-10">
+    <div flex justify-center>
+      <fieldset class="grid grid-cols-2 gap-4 w-80">
+        <div v-for="i in [1, 2]" :key="i">
+          <input
+            :id="`Server${i}`"
+            type="radio"
+            name="servers"
+            :value="`Server${i}`"
+            class="peer hidden [&:checked_+_label_svg]:block"
+            :checked="i === 1 ? true : false"
+            @change="handleServer(i)"
+          >
+    
+          <label
+            :for="`Server${i}`"
+            class="block cursor-pointer rounded-lg border border-gray-100 bg-white p-4 text-sm font-medium shadow-sm hover:border-gray-200 peer-checked:border-blue-500 peer-checked:ring-1 peer-checked:ring-blue-500"
+          >
+            <div class="flex items-center justify-between">
+              <p class="text-gray-700">Server {{ i }}</p>
+    
+              <svg
+                class="hidden h-5 w-5 text-blue-600"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </div>
+    
+          </label>
+        </div>
+        <!--     
+        <div>
+          <input
+            id="Server2"
+            type="radio"
+            name="ser2"
+            value="Server2"
+            class="peer hidden [&:checked_+_label_svg]:block"
+          >
+    
+          <label
+            for="Server2"
+            class="block cursor-pointer rounded-lg border border-gray-100 bg-white p-4 text-sm font-medium shadow-sm hover:border-gray-200 peer-checked:border-blue-500 peer-checked:ring-1 peer-checked:ring-blue-500"
+          >
+            <div class="flex items-center justify-between">
+              <p class="text-gray-700">Server 2</p>
+    
+              <svg
+                class="hidden h-5 w-5 text-blue-600"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </div>
+          </label>
+        </div> -->
+      </fieldset>
+    </div>
+    <div
+      v-if="type === 'tv' && data.selectedSeason"
+      class="grid grid-cols-[repeat(auto-fill,_190px)] grid-gap-3 mx-auto justify-center items-center"
+      p="t-10 x-2 md:x-10"
+    >
       <div v-for="index in data.selectedSeason?.episode_count" :key="index">
         <button
           flex="~ gap2"
