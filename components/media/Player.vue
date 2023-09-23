@@ -31,7 +31,7 @@ const data = reactive<{
 }>({ selectedSeason: {} as Seasons, selectedServer: 1 })
 function playMovie(server: number) {
   if (server === 1) 
-    showModal({ link: url.value, isSandbox: true })
+    showModal({ link: url.value, isSandbox: false })
   
 
   if (server === 2) 
@@ -48,7 +48,7 @@ function playTv(season: number, episode: number) {
     showModal({ link:`${url2.value}&s=${season}&e=${episode}`, isSandbox: false })
 
   else 
-    showModal({ link:`${url.value}/${season}/${episode}`, isSandbox: true })
+    showModal({ link:`${url.value}/${season}/${episode}`, isSandbox: false })
 
   
 }
