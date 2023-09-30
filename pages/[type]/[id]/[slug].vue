@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onBeforeMount } from 'vue'
 import type { MediaType } from '~/types'
 
 definePageMeta({
@@ -11,6 +12,15 @@ definePageMeta({
 const route = useRoute()
 const type = computed(() => route.params.type as MediaType || 'movie')
 const id = computed(() => route.params.id as string)
+
+onBeforeMount(()=>{
+  // check for key in local storage and create if doesn't exist 
+  const key  = `watched_${id.value}`
+  if (!localStorage.getItem(key)) {
+    const emptyMap = new Map()
+    localStorage.setItem(key, JSON.stringify(Array.from(emptyMap.entries())))
+  }
+})
 
 const [item, recommendations] = await Promise.all([
   getMedia(type.value, id.value),

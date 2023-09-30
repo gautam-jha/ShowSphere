@@ -1,6 +1,7 @@
 <script setup>
 import '@unocss/reset/tailwind.css'
-const {public:{prodUrl}} = useRuntimeConfig()
+
+const { public:{ prodUrl } } = useRuntimeConfig()
 useHead({
   htmlAttrs: {
     lang: 'en',

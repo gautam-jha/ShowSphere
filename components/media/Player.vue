@@ -17,40 +17,68 @@ const {
 
 const showModal = useIframeModal()
 const route = useRoute()
+const id = computed(() => route.params.id as string)
 
 const type = computed(() => (route.params.type as MediaType) || 'movie')
 const url = computed(
   () => `${streamUrl}${getVideoServer(props.item, type.value)}`,
 )
-const url2 = computed(
-  () => `${stream2Url}${getVideoServer2(props.item)}`,
-)
+const url2 = computed(() => `${stream2Url}${getVideoServer2(props.item)}`)
 const data = reactive<{
   selectedSeason: Seasons
   selectedServer: number
-}>({ selectedSeason: {} as Seasons, selectedServer: 1 })
+  watched: null | Map<string, boolean>
+}>({ selectedSeason: {} as Seasons, selectedServer: 1, watched: null })
 function playMovie(server: number) {
   if (server === 1) 
     showModal({ link: url.value, isSandbox: false })
-  
 
   if (server === 2) 
     showModal({ link: url2.value, isSandbox: false })
-  
 }
+
+onBeforeMount(() => {
+  // Get the existing map from local storage or create an empty map if the key doesn't exist
+  const key = `watched_${id.value}`
+
+  const storedData = localStorage.getItem(key)
+  if (storedData) 
+    data.watched = new Map(JSON.parse(storedData) || [])
+  
+})
 
 function selectedSeasonHandler(selectedSeason: Seasons) {
   data.selectedSeason = selectedSeason
 }
+function updateWatched({
+  season,
+  episode,
+}: {
+  season: number
+  episode: number
+}) {
+  const key = `watched_${id.value}`
 
+  if (data.watched) {
+    // Add a new key-value pair to the map
+    data.watched.set(`S${season}E${episode}`, true)
+
+    // Store the updated map back in local storage
+    localStorage.setItem(
+      key,
+      JSON.stringify(Array.from(data.watched.entries())),
+    )
+  }
+}
 function playTv(season: number, episode: number) {
-  if (data.selectedServer === 1) 
-    showModal({ link:`${url2.value}&s=${season}&e=${episode}`, isSandbox: false })
-
-  else 
-    showModal({ link:`${url.value}/${season}/${episode}`, isSandbox: false })
-
-  
+  updateWatched({ season, episode })
+  if (data.selectedServer === 1) {
+    showModal({
+      link: `${url2.value}&s=${season}&e=${episode}`,
+      isSandbox: false,
+    })
+  }
+  else {showModal({ link: `${url.value}/${season}/${episode}`, isSandbox: false })}
 }
 function handleServer(id: number) {
   data.selectedServer = id
@@ -111,14 +139,14 @@ const seasons = props.item?.seasons
             :checked="i === 1 ? true : false"
             @change="handleServer(i)"
           >
-    
+
           <label
             :for="`Server${i}`"
             class="block cursor-pointer rounded-lg border border-gray-100 bg-white p-4 text-sm font-medium shadow-sm hover:border-gray-200 peer-checked:border-blue-500 peer-checked:ring-1 peer-checked:ring-blue-500"
           >
             <div class="flex items-center justify-between">
               <p class="text-gray-700">Server {{ i }}</p>
-    
+
               <svg
                 class="hidden h-5 w-5 text-blue-600"
                 xmlns="http://www.w3.org/2000/svg"
@@ -132,7 +160,6 @@ const seasons = props.item?.seasons
                 />
               </svg>
             </div>
-    
           </label>
         </div>
       </fieldset>
@@ -149,6 +176,7 @@ const seasons = props.item?.seasons
           p="x6 y3"
           w-48
           bg="gray/15 hover:gray/20 disabled:gray/8 disabled:pointer-not-allowed"
+          :class="{ 'opacity-50': data.watched.get(`S${data.selectedSeason.season_number}E${index}`) }"
           transition
           :title="$t('Watch Movie')"
           @click="playTv(data.selectedSeason.season_number, index)"

@@ -9,7 +9,7 @@ const emit = defineEmits<{
 }>()
 const obj = reactive({
   selected: 0,
-})
+  })
 function clickHandler(season: Seasons) {
   obj.selected = season.id
   emit('selectedSeason', season)
